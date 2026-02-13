@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { 
   ArrowLeft, 
@@ -7,359 +7,237 @@ import {
   Info, 
   CheckCircle, 
   BrainCircuit, 
-  Droplets, 
-  ShieldAlert, 
-  Sparkles,
-  Timer,
-  ChevronRight,
-  ShieldCheck,
+  ShieldCheck, 
   AlertCircle,
-  Heart,
-  Home,
-  AlertTriangle,
-  Trophy,
-  PartyPopper,
-  Globe
+  BookOpen,
+  MonitorSmartphone,
+  ChevronRight,
+  Heart
 } from 'lucide-react';
-import { MODULES, PPE_DATA } from '../constants';
-import { ModuleId, UserProgress } from '../types';
+import { MODULES, PPE_DATA, MODULE_STEPS } from '../constants';
+import { ModuleId } from '../types';
 
 const LearningModule: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'info' | 'steps' | 'video'>('steps');
   const [ppeMode, setPpeMode] = useState<'donning' | 'doffing'>('donning');
-  const [showIncentive, setShowIncentive] = useState(false);
 
   const module = MODULES.find(m => m.id === id);
 
   if (!module) return <div className="p-8 text-center text-slate-500 font-bold">Module not found</div>;
 
-  const logPpeSuccess = (type: 'donning' | 'doffing') => {
-    const saved = localStorage.getItem('mdro_user_progress');
-    let progress: UserProgress = saved ? JSON.parse(saved) : {
-      completedModules: [],
-      quizScores: {},
-      handWashStreak: 0,
-      lastHandWash: '',
-      totalHandWashes: 0,
-      ppeDonningCount: 0,
-      ppeDoffingCount: 0
-    };
-
-    if (type === 'donning') progress.ppeDonningCount = (progress.ppeDonningCount || 0) + 1;
-    else progress.ppeDoffingCount = (progress.ppeDoffingCount || 0) + 1;
-
-    localStorage.setItem('mdro_user_progress', JSON.stringify(progress));
-    setShowIncentive(true);
-    setTimeout(() => setShowIncentive(false), 3000);
-  };
-
   const renderSteps = () => {
-    switch (id) {
-      case ModuleId.VISITOR_EDUCATION:
-        return (
-          <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            {/* Bilingual Intro */}
-            <section className="bg-purple-50 p-6 rounded-[2.5rem] border border-purple-100">
-              <div className="flex items-center justify-between mb-4">
-                 <h4 className="text-xl font-black text-purple-900 flex items-center gap-2">
-                  <AlertTriangle className="w-6 h-6 text-purple-600" />
-                  Why Prevention Matters
-                </h4>
-                <div className="bg-purple-100 px-3 py-1 rounded-full text-[10px] font-black text-purple-600 flex items-center gap-1">
-                   <Globe className="w-3 h-3" /> Bilingual Instructions
-                </div>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="bg-white p-5 rounded-3xl shadow-sm border border-purple-50 space-y-3">
-                  <div>
-                    <p className="font-bold text-slate-800 mb-1">Protecting the Patient</p>
-                    <p className="text-xs text-slate-500 leading-tight">Prevent transmission of external bacteria to your loved one.</p>
-                  </div>
-                  <div className="pt-2 border-t border-slate-50 text-right">
-                    <p className="font-bold text-slate-800 mb-1 font-arabic" dir="rtl">حماية المريض</p>
-                    <p className="text-xs text-slate-500 leading-tight font-arabic" dir="rtl">منع انتقال البكتيريا الخارجية التي قد تضعف مناعة قريبك.</p>
-                  </div>
-                </div>
-                <div className="bg-white p-5 rounded-3xl shadow-sm border border-purple-50 space-y-3">
-                  <div>
-                    <p className="font-bold text-slate-800 mb-1">Protecting Your Home</p>
-                    <p className="text-xs text-slate-500 leading-tight">Bacteria (MDROs) can follow you back to children and elderly at home.</p>
-                  </div>
-                  <div className="pt-2 border-t border-slate-50 text-right">
-                    <p className="font-bold text-slate-800 mb-1 font-arabic" dir="rtl">حماية نفسك ومنزلك</p>
-                    <p className="text-xs text-slate-500 leading-tight font-arabic" dir="rtl">البكتيريا المقاومة قد تلتصق بملابسك وتنتقل لأطفالك في المنزل.</p>
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            {/* Bilingual Steps */}
-            <section>
-              <h4 className="text-2xl font-black text-slate-800 mb-6 flex items-center gap-2">
-                <CheckCircle className="text-emerald-500" /> Steps for Every Visitor | خطوات الزائرين
-              </h4>
-              <div className="space-y-4">
-                {[
-                  { 
-                    enTitle: "Hand Hygiene on Entry", 
-                    arTitle: "نظافة اليدين عند الدخول",
-                    enDesc: "Use alcohol sanitizer immediately before touching anything.", 
-                    arDesc: "استخدم المعقم الكحولي فوراً قبل لمس أي شيء في الغرفة.",
-                    icon: Droplets, color: "text-blue-500 bg-blue-50" 
-                  },
-                  { 
-                    enTitle: "Wear Protective Gown", 
-                    arTitle: "ارتداء المئزر الواقي",
-                    enDesc: "Creates a barrier to prevent bacteria from adhering to your clothes.", 
-                    arDesc: "يخلق حاجزاً يمنع البكتيريا من الالتصاق بملابسك الشخصية.",
-                    icon: ShieldCheck, color: "text-emerald-500 bg-emerald-50" 
-                  },
-                  { 
-                    enTitle: "Avoid Patient Bed", 
-                    arTitle: "تجنب الجلوس على سرير المريض",
-                    enDesc: "The bed is the most contaminated area in the room.", 
-                    arDesc: "يعتبر سرير المريض أكثر المناطق تلوثاً بالبكتيريا في الغرفة.",
-                    icon: AlertCircle, color: "text-red-500 bg-red-50" 
-                  },
-                  { 
-                    enTitle: "Exit Protocol", 
-                    arTitle: "بروتوكول الخروج",
-                    enDesc: "Remove PPE inside the room and wash hands before exiting.", 
-                    arDesc: "انزع الملابس الواقية داخل الغرفة واغسل يديك قبل الخروج.",
-                    icon: Home, color: "text-purple-500 bg-purple-50" 
-                  }
-                ].map((step, i) => (
-                  <div key={i} className="flex gap-4 p-5 bg-white rounded-[2rem] border border-slate-100 shadow-sm items-center hover:border-blue-100 transition-colors">
-                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 ${step.color}`}>
-                      <step.icon className="w-7 h-7" />
-                    </div>
-                    <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <p className="font-bold text-slate-800 text-sm">{step.enTitle}</p>
-                        <p className="text-[11px] text-slate-500 leading-tight">{step.enDesc}</p>
-                      </div>
-                      <div className="text-right font-arabic" dir="rtl">
-                        <p className="font-bold text-slate-800 text-sm">{step.arTitle}</p>
-                        <p className="text-[11px] text-slate-500 leading-tight">{step.arDesc}</p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            {/* Bilingual Final Message */}
-            <div className="bg-amber-50 p-6 rounded-[2rem] border border-amber-100 flex items-start gap-4">
-              <Heart className="w-8 h-8 text-amber-600 shrink-0" />
-              <div className="flex-1 space-y-2">
-                <div>
-                  <p className="font-bold text-amber-900 text-sm">A Message to Families</p>
-                  <p className="text-[11px] text-amber-800 leading-relaxed">Following these protocols is the highest form of love for your family's safety.</p>
-                </div>
-                <div className="pt-2 border-t border-amber-200/30 text-right font-arabic" dir="rtl">
-                  <p className="font-bold text-amber-900 text-sm">رسالة للعائلات</p>
-                  <p className="text-[11px] text-amber-800 leading-relaxed">اتباع هذه الإجراءات هو أسمى صور الحب والحرص على سلامة عائلتك.</p>
-                </div>
-              </div>
-            </div>
+    // PPE Special Grid (Screenshot 2)
+    if (id === ModuleId.PPE_PROTOCOLS) {
+      return (
+        <div className="space-y-12 animate-in fade-in duration-500">
+          <div className="flex bg-slate-100 p-3 rounded-[3rem] max-w-2xl mx-auto shadow-inner">
+            <button 
+              onClick={() => setPpeMode('donning')}
+              className={`flex-1 flex items-center justify-center gap-3 py-6 rounded-full font-black text-xl transition-all ${ppeMode === 'donning' ? 'bg-blue-600 text-white shadow-2xl shadow-blue-200' : 'text-slate-400 hover:text-blue-600'}`}
+            >
+              <ShieldCheck className="w-7 h-7" /> Donning (Entry)
+            </button>
+            <button 
+              onClick={() => setPpeMode('doffing')}
+              className={`flex-1 flex items-center justify-center gap-3 py-6 rounded-full font-black text-xl transition-all ${ppeMode === 'doffing' ? 'bg-orange-600 text-white shadow-2xl shadow-orange-200' : 'text-slate-400 hover:text-orange-600'}`}
+            >
+              <AlertCircle className="w-7 h-7" /> Doffing (Exit)
+            </button>
           </div>
-        );
-      case ModuleId.PPE_PROTOCOLS:
-        return (
-          <div className="space-y-8 animate-in fade-in duration-700">
-            <div className="flex flex-col sm:flex-row gap-4 mb-4 p-2 bg-slate-50 rounded-[2.5rem] border border-slate-100">
-              <button 
-                onClick={() => setPpeMode('donning')}
-                className={`flex-1 flex items-center justify-center gap-3 py-5 rounded-[2rem] font-black transition-all text-lg ${ppeMode === 'donning' ? 'bg-blue-600 text-white shadow-xl shadow-blue-200' : 'text-slate-400 hover:text-blue-600 hover:bg-white'}`}
-              >
-                <ShieldCheck className={`w-6 h-6 ${ppeMode === 'donning' ? 'animate-pulse' : ''}`} />
-                Donning (Entry)
-              </button>
-              <button 
-                onClick={() => setPpeMode('doffing')}
-                className={`flex-1 flex items-center justify-center gap-3 py-5 rounded-[2rem] font-black transition-all text-lg ${ppeMode === 'doffing' ? 'bg-orange-600 text-white shadow-xl shadow-orange-200' : 'text-slate-400 hover:text-orange-600 hover:bg-white'}`}
-              >
-                <AlertCircle className={`w-6 h-6 ${ppeMode === 'doffing' ? 'animate-pulse' : ''}`} />
-                Doffing (Exit)
-              </button>
-            </div>
 
-            <div className="min-h-[400px]">
-              {ppeMode === 'donning' ? (
-                <section key="donning" className="animate-in fade-in slide-in-from-left-4 duration-500 space-y-8">
-                  <div className="flex flex-col md:flex-row md:items-center justify-between bg-blue-50/50 p-6 rounded-[2.5rem] border border-blue-100 gap-4">
-                    <div className="flex items-center gap-3">
-                      <div className="bg-blue-600 text-white p-3 rounded-2xl shadow-lg">
-                        <ShieldCheck className="w-8 h-8" />
-                      </div>
-                      <div>
-                        <h4 className="text-2xl font-black text-blue-900 leading-tight">Donning Steps</h4>
-                        <p className="text-sm text-blue-700 font-bold uppercase tracking-widest mt-1">Proper Clinical Entry</p>
-                      </div>
-                    </div>
-                    <button 
-                      onClick={() => logPpeSuccess('donning')}
-                      className="bg-emerald-500 text-white px-6 py-3 rounded-2xl font-black text-sm flex items-center gap-2 hover:bg-emerald-600 transition-all shadow-lg active:scale-95"
-                    >
-                      <CheckCircle className="w-4 h-4" /> Log Successful Donning
-                    </button>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {PPE_DATA.donning.map((step, i) => (
-                      <div key={i} className="group relative bg-white rounded-[2.5rem] border border-slate-100 shadow-sm hover:border-blue-200 hover:shadow-xl transition-all overflow-hidden flex flex-col">
-                        {step.image && (
-                          <div className="h-48 w-full overflow-hidden shrink-0">
-                            <img src={step.image} alt={step.title} className="w-full h-full object-cover transition-transform group-hover:scale-110 duration-700" />
-                          </div>
-                        )}
-                        <div className="p-6 flex-1">
-                          <div className="flex items-start gap-4">
-                            <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center font-black text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-all shrink-0 shadow-sm text-sm">{i + 1}</div>
-                            <div>
-                              <p className="font-black text-slate-800 text-lg leading-tight">{step.title}</p>
-                              <p className="text-xs text-slate-500 leading-relaxed mt-2 font-medium">{step.description}</p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </section>
-              ) : (
-                <section key="doffing" className="animate-in fade-in slide-in-from-right-4 duration-500 space-y-8">
-                  <div className="flex flex-col md:flex-row md:items-center justify-between bg-orange-50/50 p-6 rounded-[2.5rem] border border-orange-100 gap-4">
-                    <div className="flex items-center gap-3">
-                      <div className="bg-orange-600 text-white p-3 rounded-2xl shadow-lg">
-                        <AlertCircle className="w-8 h-8" />
-                      </div>
-                      <div>
-                        <h4 className="text-2xl font-black text-orange-900 leading-tight">Doffing Steps</h4>
-                        <p className="text-sm text-orange-700 font-bold uppercase tracking-widest mt-1">Safe Clinical Exit</p>
-                      </div>
-                    </div>
-                    <button 
-                      onClick={() => logPpeSuccess('doffing')}
-                      className="bg-emerald-500 text-white px-6 py-3 rounded-2xl font-black text-sm flex items-center gap-2 hover:bg-emerald-600 transition-all shadow-lg active:scale-95"
-                    >
-                      <CheckCircle className="w-4 h-4" /> Log Successful Doffing
-                    </button>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {PPE_DATA.doffing.map((step, i) => (
-                      <div key={i} className="group relative bg-white rounded-[2.5rem] border border-slate-100 shadow-sm hover:border-orange-200 hover:shadow-xl transition-all overflow-hidden flex flex-col">
-                        {step.image && (
-                          <div className="h-48 w-full overflow-hidden shrink-0">
-                            <img src={step.image} alt={step.title} className="w-full h-full object-cover transition-transform group-hover:scale-110 duration-700" />
-                          </div>
-                        )}
-                        <div className="p-6 flex-1">
-                          <div className="flex items-start gap-4">
-                            <div className="w-10 h-10 bg-orange-50 rounded-xl flex items-center justify-center font-black text-orange-600 group-hover:bg-orange-600 group-hover:text-white transition-all shrink-0 shadow-sm text-sm">{i + 1}</div>
-                            <div>
-                              <p className="font-black text-slate-800 text-lg leading-tight">{step.title}</p>
-                              <p className="text-xs text-slate-500 leading-relaxed mt-2 font-medium">{step.description}</p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </section>
-              )}
+          <div className="bg-white rounded-[3rem] p-10 border border-slate-100 shadow-sm flex flex-col md:flex-row items-center justify-between gap-8 mb-10">
+            <div className="flex items-center gap-6">
+               <div className="bg-blue-600 p-5 rounded-3xl shadow-xl shadow-blue-100">
+                 <ShieldCheck className="w-10 h-10 text-white" />
+               </div>
+               <div>
+                 <h4 className="text-3xl font-black text-slate-800">{ppeMode === 'donning' ? 'Donning Steps' : 'Doffing Steps'}</h4>
+                 <p className="text-[11px] text-blue-600 font-black uppercase tracking-widest mt-1">PROPER CLINICAL {ppeMode === 'donning' ? 'ENTRY' : 'EXIT'}</p>
+               </div>
             </div>
+            <button className="bg-emerald-500 text-white px-8 py-5 rounded-[2rem] font-black flex items-center gap-3 shadow-xl shadow-emerald-100 hover:bg-emerald-600 transition-all">
+               <CheckCircle className="w-5 h-5" /> Log Successful {ppeMode === 'donning' ? 'Donning' : 'Doffing'}
+            </button>
           </div>
-        );
-      case ModuleId.HAND_HYGIENE:
-        return (
-          <div className="space-y-8 animate-in fade-in duration-500">
-            <h4 className="text-2xl font-black flex items-center gap-2 text-blue-600"><Droplets className="w-6 h-6"/> WHO 5 Moments</h4>
-            <div className="grid grid-cols-1 gap-4">
-              {[
-                { t: "Before touching a patient", d: "Approaching to protect them." },
-                { t: "Before clean/aseptic procedures", d: "Immediately before task." },
-                { t: "After body fluid exposure risk", d: "After exposure risk." },
-                { t: "After touching a patient", d: "When leaving the patient." },
-                { t: "After touching surroundings", d: "After touching objects." }
-              ].map((item, i) => (
-                <div key={i} className="flex items-center gap-5 p-6 bg-white rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
-                  <span className="text-4xl font-black text-blue-100">0{i+1}</span>
-                  <div>
-                    <p className="font-bold text-blue-900 text-lg">{item.t}</p>
-                    <p className="text-sm text-slate-500">{item.d}</p>
-                  </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+            {(ppeMode === 'donning' ? PPE_DATA.donning : PPE_DATA.doffing).map((step, i) => (
+              <div key={i} className="group bg-white rounded-[3rem] border border-slate-100 overflow-hidden shadow-sm hover:shadow-xl transition-all flex flex-col">
+                <div className="relative h-72 overflow-hidden">
+                   {step.image && <img src={step.image} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt={step.title} />}
+                   <div className="absolute top-6 left-6 bg-blue-600 text-white w-12 h-12 rounded-2xl flex items-center justify-center font-black text-xl shadow-xl">
+                      {i + 1}
+                   </div>
                 </div>
-              ))}
-            </div>
+                <div className="p-8 space-y-3">
+                   <h5 className="font-black text-slate-800 text-2xl tracking-tight">{step.title}</h5>
+                   <p className="text-slate-500 font-medium leading-relaxed">{step.description}</p>
+                </div>
+              </div>
+            ))}
           </div>
-        );
-      default:
-        return <div className="py-20 text-center text-slate-300 font-bold">Content loading...</div>;
+        </div>
+      );
     }
+
+    // Visitor Steps (Screenshot 5)
+    if (id === ModuleId.VISITOR_EDUCATION) {
+      const visitorSteps = MODULE_STEPS[ModuleId.VISITOR_EDUCATION] || [];
+      return (
+        <div className="space-y-12 animate-in fade-in duration-700">
+           <div className="flex items-center gap-4 mb-6">
+              <div className="bg-green-50 p-2 rounded-xl text-green-600 border border-green-100">
+                <CheckCircle className="w-6 h-6" />
+              </div>
+              <h3 className="text-3xl font-black text-slate-800 tracking-tight">Steps for Every Visitor | خطوات الزائرين</h3>
+           </div>
+           
+           <div className="space-y-6">
+             {visitorSteps.map((step, i) => {
+               const Icon = step.icon || CheckCircle;
+               return (
+                <div key={i} className="bg-white p-8 rounded-[3rem] border border-slate-100 shadow-sm hover:border-green-200 transition-all flex items-center gap-10 group">
+                   <div className="bg-slate-50 p-6 rounded-[2rem] text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-all shadow-inner">
+                      <Icon className="w-10 h-10" />
+                   </div>
+                   <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-10">
+                      <div className="space-y-1">
+                        <h5 className="font-black text-slate-800 text-xl">{step.en}</h5>
+                        <p className="text-slate-500 text-sm font-medium leading-relaxed">{step.descEn}</p>
+                      </div>
+                      <div className="text-right space-y-1 font-arabic" dir="rtl">
+                        <h5 className="font-black text-slate-800 text-xl">{step.ar}</h5>
+                        <p className="text-slate-500 text-sm leading-relaxed">{step.descAr}</p>
+                      </div>
+                   </div>
+                </div>
+               );
+             })}
+           </div>
+
+           <div className="bg-amber-50 p-10 rounded-[3rem] border border-amber-100 flex items-start gap-8 mt-12">
+              <div className="bg-white p-4 rounded-[2rem] shadow-xl shadow-amber-100 shrink-0">
+                 <Heart className="w-10 h-10 text-orange-500 fill-orange-500" />
+              </div>
+              <div className="space-y-4">
+                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                      <h5 className="font-black text-orange-900 text-xl">A Message to Families</h5>
+                      <p className="text-orange-800 font-medium text-sm mt-1 leading-relaxed">Following these protocols is the highest form of love for your family's safety.</p>
+                    </div>
+                    <div className="text-right font-arabic" dir="rtl">
+                      <h5 className="font-black text-orange-900 text-xl">رسالة للعائلات</h5>
+                      <p className="text-orange-800 text-sm mt-1 leading-relaxed">اتباع هذه الإجراءات هو أسمى صور الحب والحرص على سلامة عائلتك.</p>
+                    </div>
+                 </div>
+              </div>
+           </div>
+        </div>
+      );
+    }
+
+    // Default Procedures Tab (for other modules)
+    const steps = MODULE_STEPS[id] || [];
+    return (
+      <div className="space-y-8 animate-in fade-in duration-500">
+        <div className="grid grid-cols-1 gap-6">
+          {steps.map((step, i) => (
+            <div key={i} className="bg-white p-8 rounded-[3rem] border border-slate-100 shadow-sm flex flex-col md:flex-row gap-10">
+              {step.img && (
+                <div className="w-full md:w-60 h-44 rounded-[2.5rem] overflow-hidden shrink-0 shadow-lg">
+                   <img src={step.img} className="w-full h-full object-cover" alt={step.en} />
+                </div>
+              )}
+              <div className="flex-1 space-y-6">
+                 <div className="flex justify-between items-center">
+                   <span className="bg-slate-100 px-5 py-2 rounded-full text-[11px] font-black text-slate-500 uppercase tracking-widest">STEP 0{i+1}</span>
+                   <CheckCircle className="text-green-500 w-6 h-6" />
+                 </div>
+                 <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                    <div className="space-y-1">
+                      <h5 className="font-black text-slate-800 text-2xl">{step.en}</h5>
+                      <p className="text-slate-500 font-medium">{step.descEn}</p>
+                    </div>
+                    <div className="text-right font-arabic space-y-1" dir="rtl">
+                      <h5 className="font-black text-slate-800 text-2xl">{step.ar}</h5>
+                      <p className="text-slate-500 font-medium">{step.descAr}</p>
+                    </div>
+                 </div>
+              </div>
+            </div>
+          ))}
+          {steps.length === 0 && (
+            <div className="py-24 text-center bg-slate-50 rounded-[3rem] border-2 border-dashed border-slate-200">
+              <MonitorSmartphone className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+              <p className="text-slate-400 font-black uppercase tracking-widest text-xs">Clinical procedures are being updated...</p>
+            </div>
+          )}
+        </div>
+      </div>
+    );
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 animate-in slide-in-from-bottom-4 duration-500 relative">
-      {/* Incentive Overlay */}
-      {showIncentive && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none">
-          <div className="bg-emerald-600 text-white px-10 py-6 rounded-[3rem] shadow-2xl flex flex-col items-center gap-4 animate-bounce border-4 border-white">
-            <PartyPopper className="w-12 h-12" />
-            <div className="text-center">
-              <p className="text-2xl font-black">Well Done!</p>
-              <p className="font-bold opacity-90">Compliance logged successfully +50 XP</p>
-            </div>
-          </div>
+    <div className="space-y-10 animate-in fade-in duration-500">
+      <header className="flex flex-col md:flex-row md:items-center justify-between gap-8">
+        <div className="flex items-center gap-6">
+           <div className={`${module.color} w-24 h-24 rounded-[2.5rem] flex items-center justify-center text-white shadow-2xl shadow-slate-100`}>
+              <module.icon className="w-12 h-12" />
+           </div>
+           <div>
+              <h2 className="text-5xl font-black text-slate-800 tracking-tight">{module.title}</h2>
+              <p className="text-slate-400 font-medium text-xl mt-1">{module.shortDesc}</p>
+           </div>
         </div>
-      )}
+        <button 
+          onClick={() => navigate(`/quiz/${module.id}`)} 
+          className="bg-slate-900 text-white px-12 py-6 rounded-[2rem] font-black text-lg flex items-center gap-4 hover:bg-blue-600 transition-all shadow-2xl shadow-slate-200 active:scale-95"
+        >
+          <BrainCircuit className="w-7 h-7" /> Start Exam
+        </button>
+      </header>
 
-      <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-slate-400 hover:text-blue-600 transition-all font-bold group">
-        <div className="p-2 rounded-xl group-hover:bg-blue-50"><ArrowLeft className="w-4 h-4" /></div> Back to Dashboard
-      </button>
-
-      <div className="bg-white rounded-[3rem] p-8 md:p-12 shadow-sm border border-slate-100">
-        <div className="flex flex-col md:flex-row md:items-start justify-between mb-12 gap-8">
-          <div className="flex-1 space-y-4">
-            <div className={`${module.color} w-20 h-20 rounded-[2rem] flex items-center justify-center text-white shadow-2xl shadow-slate-200`}><module.icon className="w-10 h-10" /></div>
-            <div>
-              <h2 className="text-4xl font-black text-slate-800 tracking-tight">{module.title}</h2>
-              <p className="text-slate-400 font-medium text-lg mt-1 max-w-xl">{module.shortDesc}</p>
-            </div>
-          </div>
-          <button onClick={() => navigate(`/quiz/${module.id}`)} className="flex items-center justify-center gap-3 bg-slate-900 text-white px-10 py-5 rounded-[2rem] font-bold hover:bg-blue-600 transition-all shadow-xl shadow-slate-200 active:scale-95 group">
-            <BrainCircuit className="w-6 h-6 group-hover:animate-pulse" /> Test Knowledge
+      <div className="flex bg-slate-50 p-2 rounded-[2.5rem] shadow-inner">
+        {[
+          { id: 'info', label: 'Guidelines', icon: Info }, 
+          { id: 'steps', label: 'Procedures', icon: CheckCircle }, 
+          { id: 'video', label: 'Video Training', icon: Play }
+        ].map(tab => (
+          <button 
+            key={tab.id} 
+            onClick={() => setActiveTab(tab.id as any)} 
+            className={`flex-1 flex items-center justify-center gap-3 py-6 rounded-full font-black text-lg transition-all ${activeTab === tab.id ? 'bg-white text-blue-600 shadow-md' : 'text-slate-400 hover:text-slate-600'}`}
+          >
+            <tab.icon className="w-5 h-5" /> {tab.label}
           </button>
-        </div>
+        ))}
+      </div>
 
-        <div className="flex bg-slate-50 p-2 rounded-[2rem] mb-12 overflow-x-auto scrollbar-hide">
-          {[{ id: 'info', label: 'Guidelines', icon: Info }, { id: 'steps', label: 'Procedures', icon: CheckCircle }, { id: 'video', label: 'Video Training', icon: Play }].map(tab => (
-            <button key={tab.id} onClick={() => setActiveTab(tab.id as any)} className={`flex-1 flex items-center justify-center gap-2 px-6 py-4 rounded-[1.5rem] transition-all whitespace-nowrap font-bold ${activeTab === tab.id ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>
-              <tab.icon className="w-4 h-4" /> {tab.label}
-            </button>
-          ))}
-        </div>
-
-        <div className="min-h-[400px]">
-          {activeTab === 'info' && (
-            <div className="animate-in fade-in slide-in-from-bottom-2 duration-300 space-y-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="p-8 bg-blue-50/50 rounded-[2.5rem] border border-blue-100">
-                  <ShieldAlert className="w-10 h-10 text-blue-600 mb-4" />
-                  <h4 className="text-xl font-black text-slate-800 mb-2">Evidence-Based Care</h4>
-                  <p className="text-slate-600 font-medium">Following these protocols reduces cross-contamination by 70%.</p>
+      <div className="min-h-[500px]">
+        {activeTab === 'steps' && renderSteps()}
+        {activeTab === 'info' && (
+          <div className="animate-in fade-in slide-in-from-bottom-6 duration-500">
+             <div className="bg-white p-12 rounded-[3rem] border border-slate-100 shadow-sm space-y-10">
+                <div className="flex items-start gap-8">
+                   <div className="bg-blue-50 p-4 rounded-3xl">
+                      <Info className="w-10 h-10 text-blue-600" />
+                   </div>
+                   <div>
+                      <h4 className="text-3xl font-black text-slate-800">Safety Standards</h4>
+                      <p className="text-slate-500 text-xl font-medium mt-2 leading-relaxed">Our protocols follow the latest WHO and CDC guidelines for MDRO prevention in Long-Term Care environments.</p>
+                   </div>
                 </div>
-                <div className="p-8 bg-emerald-50 rounded-[2.5rem] border border-emerald-100">
-                  <Trophy className="text-emerald-600 w-10 h-10 mb-4" />
-                  <h4 className="text-xl font-black text-slate-800 mb-2">Patient Shield Reward</h4>
-                  <p className="text-slate-600 font-medium">Log your actual steps in the 'Procedures' tab to earn safety badges.</p>
-                </div>
-              </div>
-            </div>
-          )}
-          {activeTab === 'steps' && renderSteps()}
-          {activeTab === 'video' && <div className="aspect-video bg-slate-900 rounded-[3rem] overflow-hidden flex items-center justify-center relative group"><img src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=1200" className="absolute inset-0 w-full h-full object-cover opacity-60" /><button className="z-10 bg-white p-8 rounded-full shadow-2xl"><Play className="w-10 h-10 text-blue-600 fill-blue-600" /></button></div>}
-        </div>
+             </div>
+          </div>
+        )}
+        {activeTab === 'video' && (
+          <div className="py-32 text-center bg-slate-50 rounded-[3rem] border border-dashed border-slate-200">
+             <Play className="w-20 h-20 text-slate-200 mx-auto mb-6" />
+             <p className="text-slate-400 font-black uppercase tracking-widest text-sm">Educational videos coming soon...</p>
+          </div>
+        )}
       </div>
     </div>
   );

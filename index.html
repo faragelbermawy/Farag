@@ -7,10 +7,17 @@
   <title>MDRO LTC 5 - Infection Control</title>
   
   <!-- PWA & Mobile Optimization -->
-  <meta name="theme-color" content="#2563eb">
+  <meta name="theme-color" content="#166534">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="MDRO LTC 5">
+  
+  <!-- Open Graph / Social Sharing -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="MDRO LTC 5 - Infection Control Portal">
+  <meta property="og:description" content="Official Almoosa Health platform for infection control and MDRO prevention excellence.">
+  <meta property="og:image" content="https://cdn-icons-png.flaticon.com/512/3063/3063205.png">
+  
   <link rel="manifest" href="manifest.json">
   
   <script src="https://cdn.tailwindcss.com"></script>
@@ -36,9 +43,13 @@
       0%, 100% { transform: translateY(0); }
       50% { transform: translateY(-5px); }
     }
-    /* تحسين اللمس */
     button, a {
       touch-action: manipulation;
+    }
+    /* Arabic Font Support */
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;700&display=swap');
+    .font-arabic {
+      font-family: 'Noto Sans Arabic', sans-serif;
     }
   </style>
 <script type="importmap">

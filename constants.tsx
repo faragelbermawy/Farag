@@ -67,46 +67,85 @@ export const MODULES: ModuleDefinition[] = [
 export const PPE_DATA: PPEProtocol = {
   donning: [
     { 
-      title: 'Gown (المئزر)', 
+      title: '1. Gown (المئزر)', 
       description: 'Fully cover torso from neck to knees, arms to end of wrists, and wrap around the back. Fasten in back of neck and waist.',
-      image: 'https://images.unsplash.com/photo-1612277795421-9bc7706a4a34?auto=format&fit=crop&q=80&w=600'
+      image: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&q=80&w=600'
     },
     { 
-      title: 'Mask (القناع)', 
+      title: '2. Mask (القناع)', 
       description: 'Secure ties or elastic bands at middle of head and neck. Fit flexible band to nose bridge. Fit snug to face and below chin.',
-      image: 'https://images.unsplash.com/photo-1584467735871-8e85353a8413?auto=format&fit=crop&q=80&w=600'
+      image: 'https://images.unsplash.com/photo-1586942229167-05a208215c12?auto=format&fit=crop&q=80&w=600'
     },
     { 
-      title: 'Goggles/Shield (النظارات)', 
-      description: 'Place over face and eyes and adjust to fit comfortably but securely.',
-      image: 'https://images.unsplash.com/photo-1518152006812-edab29b069ac?auto=format&fit=crop&q=80&w=600'
+      title: '3. Goggles/Shield (النظارات)', 
+      description: 'Place over face and eyes and adjust to fit.',
+      image: 'https://images.unsplash.com/photo-1584622781564-1d9876a1c742?auto=format&fit=crop&q=80&w=600'
     },
     { 
-      title: 'Gloves (القفازات)', 
-      description: 'Extend to cover wrist of isolation gown completely. Ensure no skin is exposed.',
+      title: '4. Gloves (القفازات)', 
+      description: 'Extend to cover wrist of isolation gown completely.',
       image: 'https://images.unsplash.com/photo-1581594693702-fbdc51b2763b?auto=format&fit=crop&q=80&w=600'
     }
   ],
   doffing: [
     { 
-      title: 'Gloves (القفازات)', 
-      description: 'Grasp the outside of the glove with the opposite gloved hand; peel off. Slide fingers under remaining glove at wrist and peel off.',
+      title: '1. Gloves (القفازات)', 
+      description: 'Peel off from outside. Slide fingers under remaining glove at wrist.',
       image: 'https://images.unsplash.com/photo-1583311622870-0d23528f3fc4?auto=format&fit=crop&q=80&w=600'
     },
     { 
-      title: 'Goggles/Shield (النظارات)', 
-      description: 'Remove from back by lifting head band or ear pieces without touching the front surface.',
-      image: 'https://images.unsplash.com/photo-1584622781564-1d9876a1c742?auto=format&fit=crop&q=80&w=600'
+      title: '2. Goggles (النظارات)', 
+      description: 'Remove from back by lifting head band without touching front.',
+      image: 'https://images.unsplash.com/photo-1542617267-83349d0c9243?auto=format&fit=crop&q=80&w=600'
     },
     { 
-      title: 'Gown (المئزر)', 
-      description: 'Unfasten ties. Pull away from neck and shoulders, touching inside of gown only. Turn inside out and fold into a bundle.',
-      image: 'https://images.unsplash.com/photo-1576091160550-2173dad99901?auto=format&fit=crop&q=80&w=600'
+      title: '3. Gown (المئزر)', 
+      description: 'Unfasten ties. Pull away from neck, touching inside only.',
+      image: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&q=80&w=600'
     },
     { 
-      title: 'Mask (القناع)', 
-      description: 'Grasp bottom ties/elastics, then top ones, and remove without touching the front. Discard immediately.',
+      title: '4. Mask (القناع)', 
+      description: 'Grasp bottom ties then top ones. Remove without touching front.',
       image: 'https://images.unsplash.com/photo-1584483766114-2cea6facdf57?auto=format&fit=crop&q=80&w=600'
+    }
+  ]
+};
+
+export const MODULE_STEPS: Record<string, { en: string, ar: string, descEn: string, descAr: string, img?: string, icon?: LucideIcon }[]> = {
+  [ModuleId.HAND_HYGIENE]: [
+    { en: "Wet Hands", ar: "بلل اليدين", descEn: "Use warm water", descAr: "استخدم الماء الدافئ", img: "https://images.unsplash.com/photo-1603398938378-e54eab446ddd?auto=format&fit=crop&q=80&w=400" },
+    { en: "Apply Soap", ar: "ضع الصابون", descEn: "Cover all surfaces", descAr: "تغطية جميع الأسطح", img: "https://images.unsplash.com/photo-1584622781564-1d9876a1c742?auto=format&fit=crop&q=80&w=400" },
+    { en: "Rub Palms", ar: "فرك الراحتين", descEn: "Circular motions", descAr: "حركات دائرية", img: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=400" },
+    { en: "Rinse & Dry", ar: "الشطف والتجفيف", descEn: "Use single-use towel", descAr: "استخدم منشفة أحادية الاستخدام", img: "https://images.unsplash.com/photo-1583947581924-860bda6a26df?auto=format&fit=crop&q=80&w=400" }
+  ],
+  [ModuleId.VISITOR_EDUCATION]: [
+    { 
+      en: "Hand Hygiene on Entry", 
+      ar: "نظافة اليدين عند الدخول", 
+      descEn: "Use alcohol sanitizer immediately before touching anything.", 
+      descAr: "استخدم المعقم الكحولي فوراً قبل لمس أي شيء في الغرفة.",
+      icon: Hand
+    },
+    { 
+      en: "Wear Protective Gown", 
+      ar: "ارتداء المئزر الواقي", 
+      descEn: "Creates a barrier to prevent bacteria from adhering to your clothes.", 
+      descAr: "يخلق حاجزاً يمنع البكتيريا من الالتصاق بملابسك الشخصية.",
+      icon: ShieldCheck
+    },
+    { 
+      en: "Avoid Patient Bed", 
+      ar: "تجنب الجلوس على سرير المريض", 
+      descEn: "The bed is the most contaminated area in the room.", 
+      descAr: "يعتبر سرير المريض أكثر المناطق تلوثاً بالبكتيريا في الغرفة.",
+      icon: AlertCircle
+    },
+    { 
+      en: "Exit Protocol", 
+      ar: "بروتوكول الخروج", 
+      descEn: "Remove PPE inside the room and wash hands before exiting.", 
+      descAr: "انزع الملابس الواقية داخل الغرفة واغسل يديك قبل الخروج.",
+      icon: UserRound
     }
   ]
 };
@@ -123,21 +162,7 @@ export const INITIAL_QUIZ: Record<string, any[]> = {
         'Major Drug Resistance Operation'
       ],
       correctAnswer: 1,
-      explanation: 'MDRO stands for Multi-Drug Resistant Organism, which are bacteria that have developed resistance to multiple antibiotics.'
-    }
-  ],
-  [ModuleId.VISITOR_EDUCATION]: [
-    {
-      id: 'v1',
-      question: 'Why should visitors wear PPE in isolation rooms?',
-      options: [
-        'To look professional',
-        'To prevent carrying MDROs to other patients or home',
-        'To keep the hospital clean',
-        'It is not necessary for family members'
-      ],
-      correctAnswer: 1,
-      explanation: 'PPE creates a barrier that prevents bacteria (MDROs) from attaching to your clothes and skin, protecting you and your family at home.'
+      explanation: 'MDRO stands for Multi-Drug Resistant Organism, which are bacteria resistant to multiple antibiotics.'
     }
   ]
 };
